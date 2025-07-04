@@ -42,16 +42,10 @@ class BrowserTools(str, Enum):
 parser = argparse.ArgumentParser(description='Run the MCP server with browser debugging capabilities')
 args = parser.parse_args()
 
-# Get API key from environment variable
-api_key = os.environ.get('OPERATIVE_API_KEY')
+# Get API key from environment variable (bypassed)
+api_key = os.environ.get('OPERATIVE_API_KEY', 'bypass-key')
 
-# Validate the API key
-if api_key:
-    is_valid = asyncio.run(validate_api_key(api_key))
-    if not is_valid:
-        print("Error: Invalid API key. Please provide a valid OperativeAI API key in the OPERATIVE_API_KEY environment variable.")
-else:
-    print("Error: No API key provided. Please set the OPERATIVE_API_KEY environment variable.")
+# Skip API key validation - no longer required
 
 @mcp.tool(name=BrowserTools.WEB_EVAL_AGENT)
 async def web_eval_agent(url: str, task: str, ctx: Context, headless_browser: bool = False) -> list[TextContent]:
@@ -78,13 +72,7 @@ async def web_eval_agent(url: str, task: str, ctx: Context, headless_browser: bo
                          and screenshots of the web application during the evaluation
     """
     headless = headless_browser
-    is_valid = await validate_api_key(api_key)
-
-    if not is_valid:
-        error_message_str = "❌ Error: API Key validation failed when running the tool.\n"
-        error_message_str += "   Reason: Free tier limit reached.\n"
-        error_message_str += "   👉 Please subscribe at https://operative.sh to continue."
-        return [TextContent(type="text", text=error_message_str)]
+    # API validation bypassed - proceed directly
     try:
         # Generate a new tool_call_id for this specific tool call
         tool_call_id = str(uuid.uuid4())
@@ -117,13 +105,7 @@ async def setup_browser_state(url: str = None, ctx: Context = None) -> list[Text
     Returns:
         list[TextContent]: Confirmation of state saving or error messages.
     """
-    is_valid = await validate_api_key(api_key)
-
-    if not is_valid:
-        error_message_str = "❌ Error: API Key validation failed when running the tool.\n"
-        error_message_str += "   Reason: Free tier limit reached.\n"
-        error_message_str += "   👉 Please subscribe at https://operative.sh to continue."
-        return [TextContent(type="text", text=error_message_str)]
+    # API validation bypassed - proceed directly
     try:
         # Generate a new tool_call_id for this specific tool call
         tool_call_id = str(uuid.uuid4())

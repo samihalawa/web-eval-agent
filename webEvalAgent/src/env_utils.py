@@ -5,9 +5,11 @@ import dotenv
 import pathlib
 
 # Load environment variables from .env file if it exists
-env_path = pathlib.Path('.env')
-if env_path.exists():
-    dotenv.load_dotenv()
+# Try multiple locations for .env file
+for env_path in [pathlib.Path('.env'), pathlib.Path(__file__).parent.parent.parent / '.env']:
+    if env_path.exists():
+        dotenv.load_dotenv(env_path)
+        break
 
 def get_backend_url(path: str = "") -> str:
     """

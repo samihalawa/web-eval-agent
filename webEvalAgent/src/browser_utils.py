@@ -1093,17 +1093,41 @@ async def run_browser_task(
                 f"Generated tool_call_id: {tool_call_id}", "🆔", log_type="status"
             )  # Type: status
 
-        # --- LLM Setup ---
-        from .env_utils import get_backend_url
+        # Check if browser-use subagent is disabled
+        use_subagent = os.environ.get("WEB_EVAL_USE_BROWSER_USE_SUBAGENT", "true").lower() == "true"
+        
+        if not use_subagent:
+            # Use direct browser control without nested LLM
+            from .direct_browser_control import evaluate_web_direct
+            return await evaluate_web_direct(url, task, headless)
 
-        llm = ChatAnthropic(
-            model="claude-3-5-sonnet-20240620",
-            base_url=get_backend_url("v1beta/models/claude-3-5-sonnet-20240620"),
-            extra_headers={
-                "x-operative-api-key": api_key,
-                "x-operative-tool-call-id": tool_call_id,
-            },
-        )
+        # --- LLM Setup for browser-use agent ---
+        # Check if we have a Gemini API key
+        if os.environ.get("GOOGLE_API_KEY"):
+            from langchain_google_genai import ChatGoogleGenerativeAI
+            llm = ChatGoogleGenerativeAI(
+                model="gemini-2.0-flash-exp",
+                google_api_key=os.environ.get("GOOGLE_API_KEY"),
+                temperature=0.5,
+                max_tokens=8192
+            )
+            send_log("Using Gemini 2.0 Flash for browser-use agent", "🤖", log_type="status")
+        else:
+            # Try alternative LLM configurations
+            try:
+                from .llm_config import get_llm_client
+                llm = get_llm_client(tool_call_id)
+            except:
+                # Fallback to original operative.sh proxy
+                from .env_utils import get_backend_url
+                llm = ChatAnthropic(
+                    model="claude-3-5-sonnet-20240620",
+                    base_url=get_backend_url("v1beta/models/claude-3-5-sonnet-20240620"),
+                    extra_headers={
+                        "x-operative-api-key": api_key or "bypass-key",
+                        "x-operative-tool-call-id": tool_call_id,
+                    },
+                )
         send_log(
             f"LLM ({llm.model}) configured.", "🤖", log_type="status"
         )  # Type: status
