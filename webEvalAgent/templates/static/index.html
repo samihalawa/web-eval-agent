@@ -3,48 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Operative Control Center</title>
-    <link rel="icon" href="https://www.operative.sh/favicon.ico?v=2" type="image/x-icon">
+    <title>WebFlow Navigator - Control Center</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌊</text></svg>" type="image/svg+xml">
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Add Geist Font CSS -->
-    <link rel="stylesheet" href="https://geistfont.vercel.app/geist.css">
+    <!-- Add Inter Font for modern typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class', // Enable class-based dark mode
             theme: {
                 extend: {
                     colors: {
-                        // Light Theme (Previously B&W)
-                        'light-bg': '#FFFFFF',
-                        'light-text': '#111827', // Use a slightly softer black (gray-900)
-                        'light-border': '#D1D5DB', // Gray-300
-                        'light-secondary-bg': '#F3F4F6', // Gray-100
-                        'light-secondary-text': '#374151', // Gray-700
-                        'light-hover-bg': '#E5E7EB', // Gray-200
-                        'light-hover-border': '#9CA3AF', // Gray-400
-                        'light-active-bg': '#D1D5DB', // Gray-300
+                        // Modern Light Theme with WebFlow branding
+                        'primary': '#0EA5E9',       // Sky-500 - WebFlow primary blue
+                        'primary-dark': '#0284C7',  // Sky-600
+                        'primary-light': '#38BDF8', // Sky-400
+                        'secondary': '#8B5CF6',     // Violet-500 - Secondary accent
+                        'success': '#10B981',       // Emerald-500
+                        'warning': '#F59E0B',       // Amber-500
+                        'error': '#EF4444',         // Red-500
+                        
+                        // Light Theme
+                        'light-bg': '#FAFBFC',           // Almost white with slight blue tint
+                        'light-text': '#0F172A',         // Slate-900 - Rich dark text
+                        'light-border': '#CBD5E1',       // Slate-300
+                        'light-secondary-bg': '#F1F5F9', // Slate-100
+                        'light-secondary-text': '#475569', // Slate-600
+                        'light-hover-bg': '#E2E8F0',     // Slate-200
+                        'light-hover-border': '#94A3B8', // Slate-400
+                        'light-active-bg': '#CBD5E1',    // Slate-300
+                        'light-card': '#FFFFFF',         // Pure white for cards
+                        'light-accent': '#F0F9FF',       // Sky-50 for accent areas
 
-                        // Dark Theme
-                        'dark-bg': '#111827', // Gray-900
-                        'dark-text': '#E5E7EB', // Gray-200
-                        'dark-border': '#374151', // Gray-700
-                        'dark-secondary-bg': '#1F2937', // Gray-800
-                        'dark-secondary-text': '#9CA3AF', // Gray-400
-                        'dark-hover-bg': '#374151', // Gray-700
-                        'dark-hover-border': '#6B7280', // Gray-500
-                        'dark-active-bg': '#4B5563', // Gray-600
-
-                        // Accent colors (can remain consistent or have dark variants)
-                        'accent-yellow': '#F59E0B', // Amber-500
-                        'accent-green': '#10B981', // Emerald-500
-                        'accent-red': '#EF4444',   // Red-500
+                        // Dark Theme - Modern dark with blue accents
+                        'dark-bg': '#0F172A',            // Slate-900
+                        'dark-text': '#F1F5F9',          // Slate-100
+                        'dark-border': '#334155',        // Slate-700
+                        'dark-secondary-bg': '#1E293B',  // Slate-800
+                        'dark-secondary-text': '#94A3B8', // Slate-400
+                        'dark-hover-bg': '#334155',      // Slate-700
+                        'dark-hover-border': '#64748B',  // Slate-500
+                        'dark-active-bg': '#475569',     // Slate-600
+                        'dark-card': '#1E293B',          // Slate-800 for cards
+                        'dark-accent': '#0C1A2B',        // Very dark blue for accent areas
                     },
                     fontFamily: {
-                        // Use Geist font families - nice and skinny
-                        sans: ['Geist UltraLight', 'system-ui', 'sans-serif'],
-                        mono: ['Geist Mono', 'ui-monospace', 'monospace'],
-                        thin: ['Geist UltraLight', 'Geist', 'system-ui', 'sans-serif'],
+                        // Modern font stack with better readability
+                        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Fira Code', 'Monaco', 'Cascadia Code', 'ui-monospace', 'monospace'],
+                        display: ['Inter', 'system-ui', 'sans-serif'],
                     },
                     fontWeight: {
                         hairline: '100',
@@ -79,28 +89,91 @@
           position: relative;
         }
 
-        /* Style for the animated border pseudo-element */
+        /* Enhanced animated border for active state */
         .browser-column::before {
           content: '';
           position: absolute;
-          inset: -2px; /* Adjust thickness of the border glow */
-          z-index: -1; /* Position behind the main element */
-          border-radius: inherit; /* Match parent's rounded corners */
+          inset: -3px; /* Slightly thicker border glow */
+          z-index: -1;
+          border-radius: inherit;
           background: conic-gradient(
             from var(--angle),
-            /* Use theme colors, adjust transparency as needed */
-            theme('colors.accent-green' / 0),
-            theme('colors.accent-green' / 1),
-            theme('colors.accent-green' / 0) 60% /* Adjust fade point */
+            theme('colors.primary' / 0),
+            theme('colors.primary' / 0.8),
+            theme('colors.primary-light' / 0.6),
+            theme('colors.primary' / 0) 40%
           );
-          opacity: 0; /* Hidden by default */
-          transition: opacity 0.4s ease-in-out;
+          opacity: 0;
+          transition: opacity 0.5s ease-in-out;
+          filter: blur(1px); /* Soft glow effect */
         }
 
-        /* Style when agent is running */
+        /* Enhanced style when agent is running */
         .browser-column.is-running::before {
-          opacity: 0.8; /* Make it visible, adjust subtlety */
-          animation: spin 3s linear infinite;
+          opacity: 1;
+          animation: spin 4s linear infinite;
+        }
+
+        /* Modern card styling */
+        .modern-card {
+          background: theme('colors.light-card');
+          border: 1px solid theme('colors.light-border');
+          border-radius: 12px;
+          box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+          transition: all 0.2s ease-in-out;
+        }
+        
+        .dark .modern-card {
+          background: theme('colors.dark-card');
+          border-color: theme('colors.dark-border');
+          box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+        }
+
+        .modern-card:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        .dark .modern-card:hover {
+          box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+        }
+
+        /* Enhanced button styling */
+        .modern-button {
+          @apply font-medium text-sm px-4 py-2 rounded-lg transition-all duration-200 ease-in-out;
+          @apply border border-light-border dark:border-dark-border;
+          @apply bg-light-card dark:bg-dark-card;
+          @apply text-light-text dark:text-dark-text;
+          @apply hover:bg-light-hover-bg dark:hover:bg-dark-hover-bg;
+          @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50;
+          @apply disabled:opacity-50 disabled:cursor-not-allowed;
+        }
+
+        .modern-button.primary {
+          @apply bg-primary text-white border-primary;
+          @apply hover:bg-primary-dark hover:border-primary-dark;
+        }
+
+        .modern-button.secondary {
+          @apply bg-secondary text-white border-secondary;
+          @apply hover:bg-violet-600 hover:border-violet-600;
+        }
+
+        /* Status indicators */
+        .status-indicator {
+          @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+        }
+
+        .status-indicator.running {
+          @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200;
+        }
+
+        .status-indicator.paused {
+          @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200;
+        }
+
+        .status-indicator.stopped {
+          @apply bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200;
         }
 
         /* Custom scrollbar styles for light/dark modes */
@@ -131,11 +204,10 @@
             background: theme('colors.dark-hover-border');
         }
         .auto-scroll-toggle:checked + div {
-            /* Use a neutral gray or black for checked state in B&W */
-            background-color: theme('colors.accent-green'); /* Use accent for clarity */
+            background-color: theme('colors.primary');
         }
         .auto-scroll-toggle:checked + div .dot {
-            transform: translateX(1.25rem); /* Adjust based on w-10 */
+            transform: translateX(1.25rem);
         }
 
         /* Basic styles for theme toggle icons */
@@ -146,115 +218,174 @@
         }
     </style>
 </head>
-<body class="font-light bg-light-bg text-light-text dark:bg-dark-bg dark:text-dark-text font-sans flex flex-col h-screen overflow-hidden transition-colors duration-200">
-    <!-- Header -->
-    <header class="bg-light-secondary-bg dark:bg-dark-secondary-bg border-b border-light-border dark:border-dark-border text-light-text dark:text-dark-text p-3 flex justify-between items-center flex-shrink-0 rounded-b-none">
-        <h1 class="text-lg font-mono font-semibold flex items-center">
-            <img src="https://www.operative.sh/favicon.ico?v=2" alt="Operative Favicon" class="h-6 w-6 mr-2 inline-block align-middle"> <!-- Increased size -->
-            <span class="font-sans"><a href="https://www.operative.sh" target="_blank" class="hover:underline">Operative Control Center</a></span> <!-- Applied font-sans -->
-        </h1>
+<body class="font-sans bg-light-bg text-light-text dark:bg-dark-bg dark:text-dark-text flex flex-col h-screen overflow-hidden transition-colors duration-300">
+    <!-- Enhanced Header with WebFlow branding -->
+    <header class="bg-light-card dark:bg-dark-card border-b border-light-border dark:border-dark-border text-light-text dark:text-dark-text p-4 flex justify-between items-center flex-shrink-0 shadow-sm">
         <div class="flex items-center space-x-4">
-            <!-- Browser Navigation Buttons -->
-            <div class="flex space-x-2">
-                <button id="back-button" class="bg-light-bg dark:bg-dark-bg hover:bg-light-hover-bg dark:hover:bg-dark-hover-bg text-light-text dark:text-dark-text text-xs border border-light-border dark:border-dark-border hover:border-light-hover-border dark:hover:border-dark-hover-border rounded-md px-3 py-1 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+            <div class="flex items-center space-x-3">
+                <!-- WebFlow Navigator Logo -->
+                <div class="w-10 h-10 bg-gradient-to-br from-primary to-primary-dark rounded-xl flex items-center justify-center shadow-lg">
+                    <span class="text-white text-xl font-bold">🌊</span>
+                </div>
+                <div class="flex flex-col">
+                    <h1 class="text-xl font-bold text-light-text dark:text-dark-text tracking-tight">
+                        WebFlow Navigator
+                    </h1>
+                    <p class="text-xs text-light-secondary-text dark:text-dark-secondary-text font-medium">
+                        Control Center
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Status Indicator -->
+            <div id="agent-status-badge" class="status-indicator stopped">
+                <div class="w-2 h-2 rounded-full bg-current mr-1.5"></div>
+                <span>Ready</span>
+            </div>
+        </div>
+        <div class="flex items-center space-x-3">
+            <!-- Enhanced Browser Navigation -->
+            <div class="flex items-center space-x-2 bg-light-secondary-bg dark:bg-dark-secondary-bg rounded-lg p-1">
+                <button id="back-button" class="modern-button text-xs px-3 py-1.5" disabled title="Go back">
                     ← Back
                 </button>
-                <button id="forward-button" class="bg-light-bg dark:bg-dark-bg hover:bg-light-hover-bg dark:hover:bg-dark-hover-bg text-light-text dark:text-dark-text text-xs border border-light-border dark:border-dark-border hover:border-light-hover-border dark:hover:border-dark-hover-border rounded-md px-3 py-1 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                <button id="forward-button" class="modern-button text-xs px-3 py-1.5" disabled title="Go forward">
                     Forward →
                 </button>
             </div>
-            <!-- Agent Control Buttons -->
-            <div class="flex space-x-2">
-                <!-- Style buttons with black/white/gray -->
-                <button id="pause-agent-btn" class="bg-light-bg dark:bg-dark-bg hover:bg-light-hover-bg dark:hover:bg-dark-hover-bg text-light-text dark:text-dark-text text-xs border border-light-border dark:border-dark-border hover:border-light-hover-border dark:hover:border-dark-hover-border rounded-md px-3 py-1 transition-all duration-300 disabled:opacity-50">
+            
+            <!-- Enhanced Agent Controls -->
+            <div class="flex items-center space-x-2 bg-light-secondary-bg dark:bg-dark-secondary-bg rounded-lg p-1">
+                <button id="pause-agent-btn" class="modern-button text-xs px-3 py-1.5" disabled title="Pause automation">
                     ⏸️ Pause
                 </button>
-                <button id="resume-agent-btn" class="bg-light-bg dark:bg-dark-bg hover:bg-light-hover-bg dark:hover:bg-dark-hover-bg text-light-text dark:text-dark-text text-xs border border-light-border dark:border-dark-border hover:border-light-hover-border dark:hover:border-dark-hover-border rounded-md px-3 py-1 transition-all duration-300 disabled:opacity-50">
+                <button id="resume-agent-btn" class="modern-button text-xs px-3 py-1.5" disabled title="Resume automation">
                     ▶️ Resume
                 </button>
-                <button id="stop-agent-btn" class="bg-light-bg dark:bg-dark-bg hover:bg-light-hover-bg dark:hover:bg-dark-hover-bg text-light-text dark:text-dark-text text-xs border border-light-border dark:border-dark-border hover:border-light-hover-border dark:hover:border-dark-hover-border rounded-md px-3 py-1 transition-all duration-300 disabled:opacity-50">
+                <button id="stop-agent-btn" class="modern-button secondary text-xs px-3 py-1.5" disabled title="Stop automation">
                     ⏹️ Stop
                 </button>
             </div>
 
-            <!-- View Mode Toggle -->
-            <div class="flex items-center">
-                <span class="mr-2 text-xs">View:</span>
-                <button id="view-toggle" class="bg-light-bg dark:bg-dark-bg hover:bg-light-hover-bg dark:hover:bg-dark-hover-bg text-light-text dark:text-dark-text text-xs border border-light-border dark:border-dark-border hover:border-light-hover-border dark:hover:border-dark-hover-border rounded-md px-3 py-1 transition-all duration-300">
-                    <span class="separated-label">Split</span>
-                    <span class="joined-label hidden">Joined</span>
+            <!-- Enhanced View Controls -->
+            <div class="flex items-center space-x-4 bg-light-secondary-bg dark:bg-dark-secondary-bg rounded-lg px-3 py-2">
+                <!-- View Mode Toggle -->
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-medium text-light-secondary-text dark:text-dark-secondary-text">View:</span>
+                    <button id="view-toggle" class="modern-button text-xs px-3 py-1" title="Toggle view mode">
+                        <span class="separated-label">Split</span>
+                        <span class="joined-label hidden">Joined</span>
+                    </button>
+                </div>
+
+                <!-- Auto-scroll Toggle -->
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs font-medium text-light-secondary-text dark:text-dark-secondary-text">Auto-scroll:</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="auto-scroll-toggle" class="sr-only auto-scroll-toggle" checked>
+                        <div class="w-11 h-6 bg-light-border dark:bg-dark-border rounded-full transition-colors duration-300"></div>
+                        <div class="dot absolute left-1 top-1 bg-white dark:bg-gray-200 w-4 h-4 rounded-full transition-transform duration-300 shadow-sm"></div>
+                    </label>
+                </div>
+
+                <!-- Theme Toggle -->
+                <button id="theme-toggle" type="button" class="modern-button p-2" title="Toggle theme">
+                    <svg id="theme-toggle-dark-icon" class="hidden w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                    </svg>
+                    <svg id="theme-toggle-light-icon" class="hidden w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+                    </svg>
                 </button>
             </div>
-
-            <!-- Auto-scroll Toggle -->
-            <label class="flex items-center cursor-pointer">
-                <span class="text-xs mr-2">Scroll:</span>
-                <div class="relative">
-                    <input type="checkbox" id="auto-scroll-toggle" class="sr-only auto-scroll-toggle" checked>
-                    <div class="block bg-light-border dark:bg-dark-border w-10 h-5 rounded-full transition-colors duration-300"></div>
-                    <div class="dot absolute left-0.5 top-0.5 bg-white dark:bg-gray-300 w-4 h-4 rounded-full transition-transform duration-300 transform translate-x-0"></div>
-                </div>
-            </label>
-
-            <!-- Theme Toggle Button -->
-            <button id="theme-toggle" type="button" class="text-light-secondary-text dark:text-dark-secondary-text hover:bg-light-hover-bg dark:hover:bg-dark-hover-bg focus:outline-none rounded-lg text-sm p-1.5">
-                <svg id="theme-toggle-dark-icon" class="hidden theme-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
-                <svg id="theme-toggle-light-icon" class="hidden theme-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
-            </button>
         </div>
     </header>
 
-    <!-- Main Content Area -->
-    <main id="separated-view" class="container mx-auto px-4 max-w-full flex-grow grid grid-cols-1 md:grid-cols-2 gap-4 py-4 overflow-hidden">
-        <!-- Browser View Column -->
-        <div class="browser-column bg-light-secondary-bg dark:bg-dark-secondary-bg border border-light-border dark:border-dark-border rounded-lg flex flex-col overflow-hidden h-full shadow-sm">
-             <div class="log-header bg-light-secondary-bg dark:bg-dark-secondary-bg border-b border-light-border dark:border-dark-border p-2 flex justify-between items-center text-sm font-medium flex-shrink-0 rounded-t-lg">
-                <h2 class="text-light-secondary-text dark:text-dark-secondary-text font-semibold">🌐 Browser Agent View (Interactive)</h2> <!-- Slightly darker text for header -->
-            </div>
-            <div class="bg-light-secondary-bg dark:bg-dark-secondary-bg px-3 py-2 border-t border-light-border dark:border-dark-border">
-                <div id="url-task-info" class="text-xs font-mono">
-                    <div id="current-url" class="truncate">
-                        <span class="text-light-secondary-text dark:text-dark-secondary-text font-semibold">URL:</span>
-                        <a id="url-display" href="#" target="_blank" class="text-light-text dark:text-dark-text hover:underline"></a>
+    <!-- Enhanced Main Content Area -->
+    <main id="separated-view" class="container mx-auto px-6 max-w-full flex-grow grid grid-cols-1 lg:grid-cols-2 gap-6 py-6 overflow-hidden">
+        <!-- Enhanced Browser View Column -->
+        <div class="browser-column modern-card flex flex-col overflow-hidden h-full">
+            <div class="bg-gradient-to-r from-primary/5 to-primary-light/5 dark:from-primary/10 dark:to-primary-light/10 border-b border-light-border dark:border-dark-border p-4 flex justify-between items-center flex-shrink-0 rounded-t-xl">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-primary/10 dark:bg-primary/20 rounded-lg flex items-center justify-center">
+                        🌐
                     </div>
-                    <div id="current-task" class="truncate">
-                        <span class="text-light-secondary-text dark:text-dark-secondary-text font-semibold">Task:</span>
-                        <span id="task-display" class="text-light-text dark:text-dark-text"></span>
+                    <h2 class="text-light-text dark:text-dark-text font-semibold text-lg">Browser View</h2>
+                </div>
+                <span class="text-xs text-light-secondary-text dark:text-dark-secondary-text bg-light-secondary-bg dark:bg-dark-secondary-bg px-2 py-1 rounded-full">
+                    Interactive
+                </span>
+            </div>
+            
+            <!-- Enhanced URL and Task Info -->
+            <div class="bg-light-accent dark:bg-dark-accent px-4 py-3 border-b border-light-border dark:border-dark-border">
+                <div id="url-task-info" class="space-y-2 text-sm">
+                    <div id="current-url" class="flex items-center space-x-2">
+                        <span class="text-light-secondary-text dark:text-dark-secondary-text font-medium w-12">URL:</span>
+                        <a id="url-display" href="#" target="_blank" class="text-primary hover:text-primary-dark hover:underline font-mono text-xs flex-1 truncate"></a>
+                    </div>
+                    <div id="current-task" class="flex items-start space-x-2">
+                        <span class="text-light-secondary-text dark:text-dark-secondary-text font-medium w-12">Task:</span>
+                        <span id="task-display" class="text-light-text dark:text-dark-text text-xs flex-1 leading-relaxed"></span>
                     </div>
                 </div>
             </div>
-            <div id="browser-view-container" class="flex-grow overflow-auto p-1 bg-light-secondary-bg dark:bg-dark-secondary-bg flex items-center justify-center rounded-b-lg">
-                 <img id="browser-view-img" src="" alt="Browser Agent View (Interactive)" class="max-w-full max-h-full object-contain border border-light-border dark:border-dark-border cursor-crosshair shadow-inner rounded-md" tabindex="0"/>
+            
+            <div id="browser-view-container" class="flex-grow overflow-auto p-4 bg-gradient-to-br from-light-bg to-light-secondary-bg dark:from-dark-bg dark:to-dark-secondary-bg flex items-center justify-center rounded-b-xl">
+                <img id="browser-view-img" src="" alt="Browser View" class="max-w-full max-h-full object-contain border border-light-border dark:border-dark-border cursor-crosshair shadow-lg rounded-lg transition-transform hover:scale-[1.01]" tabindex="0"/>
             </div>
         </div>
 
-        <!-- Log Columns Container -->
-        <div class="logs-wrapper flex flex-col gap-4 overflow-hidden h-full">
-            <!-- Agent & Status Logs -->
-            <div class="log-column bg-light-secondary-bg dark:bg-dark-secondary-bg border border-light-border dark:border-dark-border rounded-lg flex flex-col overflow-hidden flex-1 shadow-sm">
-                 <div class="log-header bg-light-secondary-bg dark:bg-dark-secondary-bg border-b border-light-border dark:border-dark-border p-2 flex justify-between items-center text-sm font-medium flex-shrink-0 rounded-t-lg">
-                    <h2 class="text-light-secondary-text dark:text-dark-secondary-text font-semibold">🚦 Agent & Status</h2>
-                    <button class="copy-button bg-light-bg dark:bg-dark-bg hover:bg-light-hover-bg dark:hover:bg-dark-hover-bg text-light-text dark:text-dark-text text-xs border border-light-border dark:border-dark-border hover:border-light-hover-border dark:hover:border-dark-hover-border rounded-md px-2 py-0.5" data-target="agent-log-container">Copy</button>
+        <!-- Enhanced Log Columns Container -->
+        <div class="logs-wrapper flex flex-col gap-6 overflow-hidden h-full">
+            <!-- Enhanced Agent & Status Logs -->
+            <div class="log-column modern-card flex flex-col overflow-hidden flex-1">
+                <div class="bg-gradient-to-r from-success/5 to-success/10 dark:from-success/10 dark:to-success/20 border-b border-light-border dark:border-dark-border p-4 flex justify-between items-center flex-shrink-0 rounded-t-xl">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-success/10 dark:bg-success/20 rounded-lg flex items-center justify-center">
+                            🤖
+                        </div>
+                        <h2 class="text-light-text dark:text-dark-text font-semibold">Agent & Status</h2>
+                    </div>
+                    <button class="modern-button text-xs px-3 py-1.5 copy-button" data-target="agent-log-container" title="Copy logs">
+                        📋 Copy
+                    </button>
                 </div>
-                <div id="agent-log-container" class="log-container flex-grow overflow-y-auto p-3 font-mono text-xs leading-relaxed text-light-text dark:text-dark-text rounded-b-lg"></div> <!-- Ensure log text is black -->
+                <div id="agent-log-container" class="log-container flex-grow overflow-y-auto p-4 font-mono text-sm leading-relaxed text-light-text dark:text-dark-text bg-light-accent dark:bg-dark-accent rounded-b-xl"></div>
             </div>
-            <!-- Console Logs -->
-            <div class="log-column bg-light-secondary-bg dark:bg-dark-secondary-bg border border-light-border dark:border-dark-border rounded-lg flex flex-col overflow-hidden flex-1 shadow-sm">
-                 <div class="log-header bg-light-secondary-bg dark:bg-dark-secondary-bg border-b border-light-border dark:border-dark-border p-2 flex justify-between items-center text-sm font-medium flex-shrink-0 rounded-t-lg">
-                    <h2 class="text-light-secondary-text dark:text-dark-secondary-text font-semibold">🖥️ Console</h2>
-                    <button class="copy-button bg-light-bg dark:bg-dark-bg hover:bg-light-hover-bg dark:hover:bg-dark-hover-bg text-light-text dark:text-dark-text text-xs border border-light-border dark:border-dark-border hover:border-light-hover-border dark:hover:border-dark-hover-border rounded-md px-2 py-0.5" data-target="console-log-container">Copy</button>
+            
+            <!-- Enhanced Console Logs -->
+            <div class="log-column modern-card flex flex-col overflow-hidden flex-1">
+                <div class="bg-gradient-to-r from-warning/5 to-warning/10 dark:from-warning/10 dark:to-warning/20 border-b border-light-border dark:border-dark-border p-4 flex justify-between items-center flex-shrink-0 rounded-t-xl">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-warning/10 dark:bg-warning/20 rounded-lg flex items-center justify-center">
+                            💻
+                        </div>
+                        <h2 class="text-light-text dark:text-dark-text font-semibold">Console</h2>
+                    </div>
+                    <button class="modern-button text-xs px-3 py-1.5 copy-button" data-target="console-log-container" title="Copy console logs">
+                        📋 Copy
+                    </button>
                 </div>
-                <div id="console-log-container" class="log-container flex-grow overflow-y-auto p-3 font-mono text-xs leading-relaxed text-light-text dark:text-dark-text rounded-b-lg"></div> <!-- Ensure log text is black -->
+                <div id="console-log-container" class="log-container flex-grow overflow-y-auto p-4 font-mono text-sm leading-relaxed text-light-text dark:text-dark-text bg-light-accent dark:bg-dark-accent rounded-b-xl"></div>
             </div>
-            <!-- Network Activity -->
-            <div class="log-column bg-light-secondary-bg dark:bg-dark-secondary-bg border border-light-border dark:border-dark-border rounded-lg flex flex-col overflow-hidden flex-1 shadow-sm">
-                 <div class="log-header bg-light-secondary-bg dark:bg-dark-secondary-bg border-b border-light-border dark:border-dark-border p-2 flex justify-between items-center text-sm font-medium flex-shrink-0 rounded-t-lg">
-                    <h2 class="text-light-secondary-text dark:text-dark-secondary-text font-semibold">↔️ Network (XHR/Fetch)</h2>
-                    <button class="copy-button bg-light-bg dark:bg-dark-bg hover:bg-light-hover-bg dark:hover:bg-dark-hover-bg text-light-text dark:text-dark-text text-xs border border-light-border dark:border-dark-border hover:border-light-hover-border dark:hover:border-dark-hover-border rounded-md px-2 py-0.5" data-target="network-log-container">Copy</button>
+            
+            <!-- Enhanced Network Activity -->
+            <div class="log-column modern-card flex flex-col overflow-hidden flex-1">
+                <div class="bg-gradient-to-r from-secondary/5 to-secondary/10 dark:from-secondary/10 dark:to-secondary/20 border-b border-light-border dark:border-dark-border p-4 flex justify-between items-center flex-shrink-0 rounded-t-xl">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-secondary/10 dark:bg-secondary/20 rounded-lg flex items-center justify-center">
+                            🌐
+                        </div>
+                        <h2 class="text-light-text dark:text-dark-text font-semibold">Network Activity</h2>
+                    </div>
+                    <button class="modern-button text-xs px-3 py-1.5 copy-button" data-target="network-log-container" title="Copy network logs">
+                        📋 Copy
+                    </button>
                 </div>
-                <div id="network-log-container" class="log-container flex-grow overflow-y-auto p-3 font-mono text-xs leading-relaxed text-light-text dark:text-dark-text rounded-b-lg"></div> <!-- Ensure log text is black -->
+                <div id="network-log-container" class="log-container flex-grow overflow-y-auto p-4 font-mono text-sm leading-relaxed text-light-text dark:text-dark-text bg-light-accent dark:bg-dark-accent rounded-b-xl"></div>
             </div>
-        </div> <!-- End logs-wrapper -->
+        </div>
     </main>
 
     <!-- Socket.IO Client Script -->
@@ -459,46 +590,47 @@
             const joinedLabel = viewToggleBtn.querySelector('.joined-label');
 
             if (joinedMode) {
-                separatedView.classList.remove('md:grid-cols-2');
+                separatedView.classList.remove('lg:grid-cols-2');
                 separatedView.classList.add('grid-rows-[auto,1fr]');
-                browserColumn.classList.add('md:col-span-1');
-                logsWrapper.classList.add('md:col-span-1');
+                browserColumn.classList.add('lg:col-span-1');
+                logsWrapper.classList.add('lg:col-span-1');
                 joinedLabel.classList.remove('hidden');
                 separatedLabel.classList.add('hidden');
                 console.log("Switched to Joined View");
             } else {
                 separatedView.classList.remove('grid-rows-[auto,1fr]');
-                separatedView.classList.add('md:grid-cols-2');
+                separatedView.classList.add('lg:grid-cols-2');
                 joinedLabel.classList.add('hidden');
                 separatedLabel.classList.remove('hidden');
                 console.log("Switched to Split View");
             }
         });
 
-        // Copy to clipboard buttons
+        // Enhanced copy functionality with better feedback
         document.querySelectorAll('.copy-button').forEach(btn => {
             btn.addEventListener('click', () => {
                 const targetId = btn.getAttribute('data-target');
                 const targetEl = document.getElementById(targetId);
                 if (!targetEl) return;
+                
                 const text = Array.from(targetEl.children).map(node => node.textContent).join('\n');
                 navigator.clipboard.writeText(text).then(() => {
                     const originalText = btn.textContent;
-                    btn.textContent = 'Copied!';
-                    btn.classList.add('bg-accent-green', 'text-white', 'dark:text-gray-900'); // Feedback style
+                    btn.textContent = '✅ Copied!';
+                    btn.classList.add('bg-success', 'text-white', 'border-success');
                     setTimeout(() => {
                         btn.textContent = originalText;
-                        btn.classList.remove('bg-accent-green', 'text-white', 'dark:text-gray-900');
-                    }, 1500);
+                        btn.classList.remove('bg-success', 'text-white', 'border-success');
+                    }, 2000);
                 }).catch((err) => {
                     console.error('Failed to copy:', err);
                     const originalText = btn.textContent;
-                    btn.textContent = 'Failed';
-                    btn.classList.add('bg-accent-red', 'text-white', 'dark:text-gray-900'); // Feedback style
+                    btn.textContent = '❌ Failed';
+                    btn.classList.add('bg-error', 'text-white', 'border-error');
                     setTimeout(() => {
                         btn.textContent = originalText;
-                        btn.classList.remove('bg-accent-red', 'text-white', 'dark:text-gray-900');
-                     }, 2000);
+                        btn.classList.remove('bg-error', 'text-white', 'border-error');
+                    }, 2000);
                 });
             });
         });
@@ -526,22 +658,29 @@
             appendLog(agentLogEl, "⏹️ Stop agent requested");
         });
 
-        // Receive agent state updates
+        // Enhanced agent state updates with status badge
+        const agentStatusBadge = document.getElementById('agent-status-badge');
+        
         socket.on('agent_state', (payload) => {
-            if (payload && payload.state && pauseAgentBtn && resumeAgentBtn && stopAgentBtn && browserColumnEl) {
+            if (payload && payload.state && pauseAgentBtn && resumeAgentBtn && stopAgentBtn && browserColumnEl && agentStatusBadge) {
                 const { paused, stopped } = payload.state;
                 const isRunning = !paused && !stopped;
 
+                // Update button states
                 pauseAgentBtn.disabled = paused || stopped;
                 resumeAgentBtn.disabled = !paused || stopped;
                 stopAgentBtn.disabled = stopped;
 
-                // Toggle running indicator class on browser column
+                // Update browser column animation
                 if (isRunning) {
                     browserColumnEl.classList.add('is-running');
                 } else {
                     browserColumnEl.classList.remove('is-running');
                 }
+
+                // Update status badge
+                agentStatusBadge.className = 'status-indicator ' + (stopped ? 'stopped' : paused ? 'paused' : 'running');
+                agentStatusBadge.querySelector('span').textContent = stopped ? 'Stopped' : paused ? 'Paused' : 'Running';
 
                 const stateMessage = stopped ? "⏹️ Agent is STOPPED" : paused ? "⏸️ Agent is PAUSED" : "▶️ Agent is RUNNING";
                 const lastLog = agentLogEl?.lastChild?.textContent;
