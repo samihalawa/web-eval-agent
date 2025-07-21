@@ -2,7 +2,7 @@
 
 > *Intelligent web automation and testing made simple*
 
-![WebFlow Navigator Light Mode](https://github.com/user-attachments/assets/dc7a52cf-1ec2-45e2-b3ff-c36c9267f940)
+![WebFlow Navigator Control Center](webflow-navigator-demo.png)
 
 WebFlow Navigator is a modern, intelligent web automation and testing platform that combines the power of AI-driven browser automation with a beautiful, intuitive control center. Built for developers, testers, and automation engineers who demand both functionality and elegance.
 
