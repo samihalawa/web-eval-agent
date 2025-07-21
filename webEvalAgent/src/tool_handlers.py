@@ -627,7 +627,8 @@ async def handle_setup_browser_state(arguments: Dict[str, Any], ctx: Context, ap
         open_log_dashboard()
         send_log("Log dashboard initialized for browser state setup", "🚀")
     except Exception as log_server_error:
-        print(f"Warning: Could not start log dashboard: {log_server_error}")
+        # Don't print to stdout as it breaks MCP protocol
+        pass
     
     # Get the URL if provided
     url = arguments.get("url", "about:blank")

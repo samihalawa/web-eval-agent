@@ -5,13 +5,24 @@ import os
 import argparse
 import traceback
 import uuid
+import logging
+import warnings
 from enum import Enum
+
+# CRITICAL: Disable ALL logging immediately to prevent MCP protocol breakage
+logging.disable(logging.CRITICAL)
+warnings.filterwarnings("ignore")
+
 from webEvalAgent.src.utils import stop_log_server
 from webEvalAgent.src.log_server import send_log
 
 # Set the API key to a fake key to avoid error in backend
 os.environ["ANTHROPIC_API_KEY"] = 'not_a_real_key'
 os.environ["ANONYMIZED_TELEMETRY"] = 'false'
+
+# Additional environment variables to suppress logging
+os.environ["BROWSER_USE_LOGGING"] = 'false'
+os.environ["PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD"] = '1'
 
 # MCP imports
 from mcp.server.fastmcp import FastMCP, Context

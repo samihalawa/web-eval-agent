@@ -778,13 +778,14 @@ async def run_browser_task(
         None  # To store original method for this run's finally block
     )
 
-    # Configure logging suppression
-    logging.basicConfig(level=logging.CRITICAL)  # Set root logger level first
-    # Then configure specific loggers
-    for logger_name in ["browser_use", "root", "agent", "browser"]:
-        # Get the logger for the current name and set its level
+    # Configure logging suppression for MCP compatibility
+    # Completely disable logging to avoid stdout pollution that breaks MCP
+    logging.disable(logging.CRITICAL)
+    
+    # Additional suppression for specific loggers
+    for logger_name in ["browser_use", "root", "agent", "browser", "playwright", "httpx"]:
         current_logger = logging.getLogger(logger_name)
-        current_logger.setLevel(logging.CRITICAL)
+        current_logger.disabled = True
 
     warnings.filterwarnings("ignore", category=UserWarning)
     set_verbose(False)
